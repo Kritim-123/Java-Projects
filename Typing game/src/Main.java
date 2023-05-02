@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
+
+
     public static void main(String[] args) {
 
 
@@ -31,6 +33,8 @@ public class Main extends Application {
      * the application scene can be set.
      * Applications may create other stages, if needed, but they will not be
      * primary stages.
+     * The speed lets you choose who fast the word will spawn
+     * The duration will let you how many cycle will the words go in circle before getting removed.
      * @throws Exception
      */
     @Override
@@ -102,19 +106,14 @@ public class Main extends Application {
 
 
 
-        VBox timeBox = new VBox(timeOfWord, comboBox, DurationBox);
+        VBox timeBox = new VBox(timeOfWord, comboBox, DurationBox, comboBoxDuration);
         window.setLeft(timeBox);
+
 
 
 
         //-----------------------------------
 
-
-
-
-
-
-        //---------------------------
 
 
         // Add them all to the VBox
@@ -132,8 +131,6 @@ public class Main extends Application {
         // Put it in the middle of the BorderPane
 
         window.setCenter(words.getWordsPane());
-
-//        words.getTimeline().setCycleCount(selectedValueDuration.get());
 
 
         // Create a VBox for the keyboard
@@ -178,8 +175,7 @@ public class Main extends Application {
             public void handle(long currentTime) {
                 if (lastTime == 0 || currentTime - lastTime >= (1_000_000_000L) * (6- selectedValue.get())) {
                     lastTime = currentTime;
-                    words.createWord();
-
+                    words.createWord(selectedValueDuration.get());
 
                 }
 
@@ -194,7 +190,6 @@ public class Main extends Application {
 
         Button endButton = new Button("END GAME");
         endButton.setLayoutX(width - 150);
-//        endButton.setLayoutY(50);
         words.getWordsPane().getChildren().add(endButton);
 
 

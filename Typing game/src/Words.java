@@ -1,13 +1,8 @@
 import javafx.animation.*;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
@@ -16,7 +11,6 @@ import java.lang.Math;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -24,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 
-public class Words {
+public class Words extends  Main{
     // Pane (https://openjfx.io/javadoc/18/javafx.graphics/javafx/scene/layout/Pane.html)
     // which represents the floating words part of the game
     private final Pane wordsPane;
@@ -65,18 +59,13 @@ public class Words {
         this.width = width;
         this.height = height;
 
-        this.timeline = new Timeline();
-    }
-
-    public Timeline getTimeline() {
-        return timeline;
     }
 
     public Pane getWordsPane() {
         return wordsPane;
     }
 
-    public WordBox getFirstActiveWord(){
+    public WordBox getFirstActiveWord() {
         return activeWords.get(0);
     }
 
@@ -114,6 +103,7 @@ public class Words {
 
     }
 
+
     /**
      * Creates a random floating word.
      * Choses a random word from the list of words.
@@ -124,7 +114,7 @@ public class Words {
      *
      * Makes the word move in circle. (Extra-credit work)
      */
-    public void createWord() {
+    public void createWord(int durationOfDisplay) {
 
         String word = words.get((int) (Math.random() * words.size())); //Random word
 
@@ -144,27 +134,6 @@ public class Words {
 
         wordsPane.getChildren().add(label); // added the word to wordsPane
 
-
-        //-----------making button so that user can choose how long a word will last on screen---
-
-
-//        ComboBox<Integer> comboBoxDuration = new ComboBox<>();
-//        comboBoxDuration.getItems().addAll(1, 2, 3, 4);
-//        comboBoxDuration.setValue(10);
-//
-//        AtomicInteger selectedValueDuration = new AtomicInteger(10);
-//
-//        comboBoxDuration.setOnAction(event -> {
-//            selectedValueDuration.set(comboBoxDuration.getValue());
-//        });
-//
-//        Label durationOfWord = new Label(" Cycle Duration");
-//        durationOfWord.setFont(new Font(15));
-//        VBox timeBox = new VBox(durationOfWord, comboBoxDuration);
-//        wordsPane.getChildren().add(timeBox);
-
-
-
     //----------------------------------------
         // To make the word go in circular motion
 
@@ -173,7 +142,7 @@ public class Words {
         double centerY = height / 2;
         double radius = 100;
 
-//        Circle circle = new Circle(centerX, centerY, radius);
+
 
 
         double angle = 0;
@@ -187,6 +156,8 @@ public class Words {
         KeyValue keyValueX = new KeyValue(label.layoutXProperty(), centerX + radius);
         KeyValue keyValueY = new KeyValue(label.layoutYProperty(), centerY);
         KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY);
+
+        this.timeline = new Timeline();
 
 
         timeline.getKeyFrames().add(keyFrame);
@@ -202,9 +173,19 @@ public class Words {
             timeline.getKeyFrames().add(keyFrame1);
         }
 
-        timeline.setCycleCount(1);
+
+
+        timeline.setCycleCount(durationOfDisplay);
         timeline.setAutoReverse(true);
-//        timeline.setOnFinished(event -> removeWord(getFirstActiveWord()));
+
+        try{
+
+            timeline.setOnFinished(event -> removeWord(getFirstActiveWord()));
+
+        }catch (IndexOutOfBoundsException e){
+
+        }
+
 
 
         timeline.play();
@@ -312,12 +293,4 @@ public class Words {
 
     }
 
-//    public void timeToRemove(long startTime, long endTime, int duration){
-//      float time = (float) (endTime - startTime) / 1000;
-//
-//      if(time >= duration){
-//          removeWord(getFirstActiveWord());
-//      }
-//
-//    }
 }
